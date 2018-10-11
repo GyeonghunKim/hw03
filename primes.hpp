@@ -6,9 +6,11 @@
 
 #include <iostream>
 #include <vector>
+#include <array>
 #include <chrono>
 #include <cmath>
-
+#include <list>
+#include <omp.h>
 
 auto sum_vector(const std::vector<int> &V){
     int sum = 0;
@@ -28,14 +30,6 @@ auto print_vector(const std::vector<int> &v){
     std::cout << "]" << std::endl;
 }
 
-auto print_vector(const std::vector<time_t> &v){
-    std::cout << "[ ";
-    int length = v.size();
-    for(int i = 0; i < length; ++i){
-        std::cout << v[i] << "  ";
-    }
-    std::cout << "]";
-}
 auto isNotPrime2PrimeList(const std::vector<int> &isNotPrime){
     int max_size = isNotPrime.size();
     int length = isNotPrime.size() - sum_vector(isNotPrime);
@@ -49,7 +43,8 @@ auto isNotPrime2PrimeList(const std::vector<int> &isNotPrime){
     return PrimeList;
 }
 
-// for N = 2^25-1, elapsed time: 19.7774s
+
+// for N = 2^24-1, elapsed time: 7.61087s
 auto get_prime_under_v1(const int max_val){
     // time - things are from Eric's github
     std::chrono::time_point<std::chrono::system_clock> start, stop;
@@ -93,8 +88,8 @@ auto get_prime_under_v1(const int max_val){
 
 }
 
-// use sqrt instead pow( ,0.5);
-// for N = 2^25-1, elapsed time: 19.6116s
+
+// for N = 2^24-1, elapsed time: 7.59487s
 auto get_prime_under_v2(const int max_val){
     // time - things are from Eric's github
     std::chrono::time_point<std::chrono::system_clock> start, stop;
@@ -138,10 +133,13 @@ auto get_prime_under_v2(const int max_val){
 
 }
 
-
-// for N = 2^25-1, elapsed time: 19.6116s
-auto get_prime_under_v2(const int max_val){
+// use j * j < i instead j < std::root(i)
+// littttttttttttttttttttttttle bit faster...
+// for N = 2^24-1, elapsed time: 7.30782s
+auto get_prime_under_v3(const int max_val){
     // time - things are from Eric's github
+
+
     std::chrono::time_point<std::chrono::system_clock> start, stop;
     start = std::chrono::system_clock::now();
     std::vector <int> isNotPrime(max_val+1);
@@ -152,8 +150,7 @@ auto get_prime_under_v2(const int max_val){
     for(int i = 2; i < (max_val + 1); ++i){
         // std::cout << i << std::endl;
         if(isNotPrime[i]){ continue; }
-        int sqi = std::sqrt(i);
-        for (j = 2; j < sqi; ++j){
+        for (j = 2; j * j < i; ++j){
             if(i%j == 0){
                 isNotPrime[i] = 1;
                 break;
@@ -165,6 +162,141 @@ auto get_prime_under_v2(const int max_val){
             k++;
         }
         // print_vector(isNotPrime);
+    }
+
+    auto PrimeList = isNotPrime2PrimeList(isNotPrime);
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    stop = std::chrono::system_clock::now();
+
+    // From Eric's code.
+    std::chrono::duration<double> elapsed_seconds = stop - start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(stop);
+
+    std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s\n";
+
+    return PrimeList;
+
+}
+
+// use j * j < i instead j < std::root(i)
+// littttttttttttttttttttttttle bit faster...
+// for N = 2^24-1, elapsed time: 7.30782s
+auto get_prime_under_v3_withOMP(const int max_val){
+    // time - things are from Eric's github
+
+    std::chrono::time_point<std::chrono::system_clock> start, stop;
+    start = std::chrono::system_clock::now();
+    std::vector <int> isNotPrime(max_val+1);
+    isNotPrime[0] = 1;
+    isNotPrime[1] = 1;
+    // omp_set_num_threads(8);
+    #pragma omp parallel for
+    for(int i = 2; i < (max_val + 1); ++i){
+        // std::cout << i << std::endl;
+        if(isNotPrime[i]){ continue; }
+        for (int j = 2; j * j < i; ++j){
+            if(i%j == 0){
+                isNotPrime[i] = 1;
+                break;
+            }
+        }
+        int k = 2;
+        while (k * i < max_val + 1) {
+            isNotPrime[k * i] = 1;
+            k++;
+        }
+        // print_vector(isNotPrime);
+    }
+
+    auto PrimeList = isNotPrime2PrimeList(isNotPrime);
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    stop = std::chrono::system_clock::now();
+
+    // From Eric's code.
+    std::chrono::duration<double> elapsed_seconds = stop - start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(stop);
+
+    std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s\n";
+
+    return PrimeList;
+
+}
+void omp_test()
+{
+    int i;
+    omp_set_num_threads(4);
+    #pragma omp parallel
+    for(i=0; i<100; i++)
+        printf("%d Hello, World! Thread ID: %d\n",
+               i,
+               omp_get_thread_num());
+}
+
+void access_time_test(){
+    std::vector<int> vec(1000000);
+    std::array<int, 1000000> arr;
+
+    std::chrono::time_point<std::chrono::system_clock> start, stop;
+    start = std::chrono::system_clock::now();
+    for(int i = 0; i < 1000000; ++i)
+        vec[i] += 1;
+    auto finish = std::chrono::high_resolution_clock::now();
+    stop = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> elapsed_seconds = stop - start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(stop);
+    std::cout << "vector elapsed time: " << elapsed_seconds.count() << "s\n";
+
+    std::chrono::time_point<std::chrono::system_clock> start2, stop2;
+    start2 = std::chrono::system_clock::now();
+    for(int i = 0; i < 1000000; ++i)
+        arr[i] += 1;
+    auto finish2 = std::chrono::high_resolution_clock::now();
+    stop2 = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> elapsed_seconds2 = stop2 - start2;
+    std::time_t end_time2 = std::chrono::system_clock::to_time_t(stop);
+    std::cout << "vector elapsed time: " << elapsed_seconds2.count() << "s\n";
+
+}
+
+
+// use j * j < i instead j < std::root(i)
+// littttttttttttttttttttttttle bit faster...
+// for N = 2^24-1, elapsed time: 7.30782s
+auto get_prime_under_v4(const int max_val){
+    // time - things are from Eric's github
+
+
+    std::chrono::time_point<std::chrono::system_clock> start, stop;
+    start = std::chrono::system_clock::now();
+    std::vector <int> isNotPrime(max_val+1);
+    int k;
+    isNotPrime[0] = 1;
+    isNotPrime[1] = 1;
+    isNotPrime[2] = 1;
+    isNotPrime[3] = 1;
+
+    int j;
+    for(int i = 6; i < (max_val + 1); i+=6){
+        for(int tmp = i-1; tmp < i+2; ++tmp) {
+            if (isNotPrime[tmp]) { continue; }
+            for (j = 2; j * j < tmp; ++j) {
+                if (tmp % j == 0) {
+                    isNotPrime[tmp] = 1;
+                    break;
+                }
+            }
+            k = 2;
+            while (k * tmp < max_val + 1) {
+                isNotPrime[k * tmp] = 1;
+                k++;
+            }
+        }
     }
 
     auto PrimeList = isNotPrime2PrimeList(isNotPrime);
