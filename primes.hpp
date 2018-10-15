@@ -12,11 +12,12 @@
 #include <list>
 #include <omp.h>
 
-auto sum_vector(const std::vector<int> &V){
+template <typename T>
+auto sum_vector(const T &V){
     int sum = 0;
     int length = V.size();
     for(int i = 0; i < length; ++i){
-        sum += V[i];
+        sum += int(V[i]);
     }
     return sum;
 }
@@ -30,10 +31,21 @@ auto print_vector(const std::vector<int> &v){
     std::cout << "]" << std::endl;
 }
 
-auto isNotPrime2PrimeList(const std::vector<int> &isNotPrime){
+
+auto print_list(const std::list<bool> &l){
+    std::cout << "[ ";
+    for(auto it = begin(l), e = end(l); it != e; ++it){
+        std::cout << *it << "  ";
+    }
+    std::cout << "]" << std::endl;
+}
+
+
+template <typename T>
+auto isNotPrime2PrimeList(const T &isNotPrime){
     int max_size = isNotPrime.size();
     int length = isNotPrime.size() - sum_vector(isNotPrime);
-    std::vector<int> PrimeList(length);
+    T PrimeList(length);
     int j = 0;
     for(int i = 2; i < max_size; ++i){
         if(!isNotPrime[i]){
@@ -42,6 +54,7 @@ auto isNotPrime2PrimeList(const std::vector<int> &isNotPrime){
     }
     return PrimeList;
 }
+
 
 
 // for N = 2^24-1, elapsed time: 7.61087s
@@ -185,7 +198,6 @@ auto get_prime_under_v3(const int max_val){
 // for N = 2^24-1, elapsed time: 7.30782s
 auto get_prime_under_v3_withOMP(const int max_val){
     // time - things are from Eric's github
-
     std::chrono::time_point<std::chrono::system_clock> start, stop;
     start = std::chrono::system_clock::now();
     std::vector <int> isNotPrime(max_val+1);
@@ -264,9 +276,8 @@ void access_time_test(){
 
 }
 
-
-// use j * j < i instead j < std::root(i)
-// littttttttttttttttttttttttle bit faster...
+// skip the even number in for loop....
+// littttttttttttttle bit faster...
 // for N = 2^24-1, elapsed time: 7.30782s
 auto get_prime_under_v4(const int max_val){
     // time - things are from Eric's github
@@ -278,27 +289,23 @@ auto get_prime_under_v4(const int max_val){
     int k;
     isNotPrime[0] = 1;
     isNotPrime[1] = 1;
-    isNotPrime[2] = 1;
-    isNotPrime[3] = 1;
-
     int j;
-    for(int i = 6; i < (max_val + 1); i+=6){
-        for(int tmp = i-1; tmp < i+2; ++tmp) {
-            if (isNotPrime[tmp]) { continue; }
-            for (j = 2; j * j < tmp; ++j) {
-                if (tmp % j == 0) {
-                    isNotPrime[tmp] = 1;
-                    break;
-                }
-            }
-            k = 2;
-            while (k * tmp < max_val + 1) {
-                isNotPrime[k * tmp] = 1;
-                k++;
+    for(int i = 3; i < (max_val + 1); i+=2){
+        // std::cout << i << std::endl;
+        if(isNotPrime[i]){ continue; }
+        for (j = 2; j * j < i; ++j){
+            if(i%j == 0){
+                isNotPrime[i] = 1;
+                break;
             }
         }
+        k = 2;
+        while (k * i < max_val + 1) {
+            isNotPrime[k * i] = 1;
+            k++;
+        }
+        // print_vector(isNotPrime);
     }
-
     auto PrimeList = isNotPrime2PrimeList(isNotPrime);
 
     auto finish = std::chrono::high_resolution_clock::now();
@@ -311,6 +318,147 @@ auto get_prime_under_v4(const int max_val){
     std::cout << "finished computation at " << std::ctime(&end_time)
               << "elapsed time: " << elapsed_seconds.count() << "s\n";
 
+
     return PrimeList;
 
 }
+
+// skip the even number in for loop....
+// littttttttttttttle bit faster...
+// for N = 2^24-1, elapsed time: 7.30782s
+auto get_prime_under_v5(const int max_val){
+    // time - things are from Eric's github
+    
+    std::chrono::time_point<std::chrono::system_clock> start, stop;
+    start = std::chrono::system_clock::now();
+    std::vector <int> isNotPrime(max_val+1);
+    int k;
+    isNotPrime[0] = 1;
+    isNotPrime[1] = 1;
+    int j;
+    for(int i = 3; i < (max_val + 1); i+=2){
+        // std::cout << i << std::endl;
+        if(isNotPrime[i]){ continue; }
+        for (j = 2; j * j < i; ++j){
+            if(i%j == 0){
+                isNotPrime[i] = 1;
+                break;
+            }
+        }
+        k = 2;
+        while (k * i < max_val + 1) {
+            isNotPrime[k * i] = 1;
+            k++;
+        }
+        // print_vector(isNotPrime);
+    }
+    auto PrimeList = isNotPrime2PrimeList(isNotPrime);
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    stop = std::chrono::system_clock::now();
+
+    // From Eric's code.
+    std::chrono::duration<double> elapsed_seconds = stop - start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(stop);
+
+    std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s\n";
+
+
+    return PrimeList;
+
+}
+
+auto sum_list(std::list<bool> isNotPrime){
+    auto sum = 0;
+    for(auto it = begin(isNotPrime), e = end(isNotPrime); it != e; ++it){
+        sum += *it;
+    }
+    return sum;
+}
+
+
+auto isNotPrime2PrimeList_listversion(std::list<bool> isNotPrime){
+    int max_size = isNotPrime.size();
+    int length = isNotPrime.size() - sum_list(isNotPrime);
+    std::vector<int> PrimeList(length);
+    int j = 0;
+    int k = 1;
+    for(auto it = begin(isNotPrime), e = end(isNotPrime); it != e; ++it){
+        if(!(*it)){
+            PrimeList[j++] = k;
+        }
+        ++k;
+    }
+    return PrimeList;
+}
+
+
+// I implement with list but its soooooooooooooooooooooo slow...
+auto get_prime_under_v6(const int max_val){
+    // time - things are from Eric's github
+
+
+    std::chrono::time_point<std::chrono::system_clock> start, stop;
+    start = std::chrono::system_clock::now();
+
+    std::list<bool> isNotPrime(max_val+1);
+    int k = 2;
+    auto it = begin(isNotPrime);
+    auto e = end(isNotPrime);
+    *it = 1;
+    ++it;
+    for(;it != e;){
+        // std::cout << k << std::endl;
+        // if number is not prime, mark set isNotPrime() = 1;
+        for(auto j = 2; j < k; ++j){
+            if(k%j == 0){
+                *it = 1;
+                break;
+            }
+        }
+        // if run all for loop without break, number k is prime
+        auto tmp_it = begin(isNotPrime);
+        for(auto i = 0; i < (2 * k - 1); ++i){
+            ++tmp_it;
+        }
+        // infinite loop...
+        while(true){
+            *tmp_it = 1;
+            auto mrk = 0;
+            for(auto kk = 0; kk < k; ++kk){
+                ++tmp_it;
+                if(tmp_it == e){
+                    mrk = 1;
+                    break;
+                }
+            }
+            if(mrk){
+                break;
+            }
+        }
+        while(true){
+            ++it;
+            ++k;
+            if(it == e) break;
+            if(*it == 0) break;
+        }
+    }
+
+
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    stop = std::chrono::system_clock::now();
+
+    // From Eric's code.
+    std::chrono::duration<double> elapsed_seconds = stop - start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(stop);
+
+    std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s\n";
+    auto PrimeList = isNotPrime2PrimeList_listversion(isNotPrime);
+
+    return PrimeList;
+
+}
+
