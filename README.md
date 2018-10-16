@@ -3,7 +3,7 @@ Get prime numbers under input N
 ## 0. prelim.
 This is for homework 3 of SNU TPCS2 class  
 Codes related to measuring program operating time and run test refer to Eric(TA)'s code.  
-
+I use -O3 -Ofast compiler flag for optimization.
 ## 1. Basic information
 In utils.cpp, it includes some functions about print, sum, ... etc..   
 In primes.cpp, it includes some functions about get prime numbers under some input integer N  
@@ -62,3 +62,38 @@ and get_prime_under_v5() use isNotPrime2PrimeList_vec_array2() instead of isNotP
 5 - 1 - 2. int type is faster than bool type vector....  
 6. I found that I misunderstood the algorithm "Seive of Erotosthenes"...
  => It can calculate prime under ~(2^27) in 10s .....!!!
+7. I try to use std::list. But it's sooooooooooo slow...
+8. I create get_prime_under_v8() based on get_prime_under_v6(). calculate square every for loop like (3)
+=> little more faster, same time scale.
+9. I found that while is faster than for loop. See while_vs_for() in testing_experiments.hpp
+I use while instead of for loop. 
+I also create isNotPrime2PrimeList_vec_array3() which use while loop instead of for loop
+=> little more faster, same time scale.(But compared to the previous one, it is relatively large.)
+10. I think Code 2 is faster than Code 1. Because Code 2 has less operation. 
+```cpp
+// Code 1 
+while(some conditions){
+    if(!isNotPrime){
+    ~ ~ ~ ~
+    }
+}
+
+// Code 2
+while(some conditions){
+    if(isNotPrime) break;
+    ~ ~ ~ ~
+} 
+```
+So I create get_prime_under_v10() which look like Code 2.  
+It makes my code 2 times faster!  
+
+10.  I use some compiler flags and I found that -O3 -Ofast flag make my code quiet faster. 
+=> Now I can get prime under (2^30 -1) in 18s!!!!
+But My I can increase input size because of memory error... (my computer is 8GB memeory)
+
+11. I pre_calculate auto max_val_plus_one = max_val + 1 because In loop, It calculate so many times.  
+=> little bit faster
+
+12. I found that accessing speed for array is so much faster than accessing speed for vector with compiler flag -O3 -Ofast
+
+

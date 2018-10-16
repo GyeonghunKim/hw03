@@ -1,6 +1,22 @@
 //
 // Created by ghkim on 18. 10. 15.
 //
+// Utilities for this project.
+// Some are used but some are replaced by other function or not used.
+//
+// List of functions:
+//
+// print_vec_arrat()
+// print_list()
+// sum_vec_arrat()
+// sum_list()
+// isNotPrime2PrimeList_vec_array()
+// isNotPrime2PrimeList_list()
+// isNotPrime2PrimeList_vec_array2()
+// isNotPrime2PrimeList_vec_array3()
+//
+//
+
 
 #pragma once
 
@@ -8,6 +24,8 @@
 #include <vector>
 #include <array>
 #include <list>
+#include <cmath>
+
 
 // print vector or array
 // It prints like [1, 2, ..., 100]
@@ -56,7 +74,8 @@ auto sum_list(const T &isNotPrime){
     return sum;
 }
 
-
+// this function create PrimeList from isNotPrime
+// input data(isNotPrime) should be std::vector or std::array
 template <typename T>
 auto isNotPrime2PrimeList_vec_array(const T &isNotPrime){
     int max_size = isNotPrime.size();
@@ -71,6 +90,8 @@ auto isNotPrime2PrimeList_vec_array(const T &isNotPrime){
     return PrimeList;
 }
 
+// this function create PrimeList from isNotPrime
+// input data(isNotPrime) should be std::list
 template <typename T>
 auto isNotPrime2PrimeList_list(const T &isNotPrime){
     int max_size = isNotPrime.size();
@@ -87,17 +108,50 @@ auto isNotPrime2PrimeList_list(const T &isNotPrime){
     return PrimeList;
 }
 
+// this function create PrimeList from isNotPrime
+// input data(isNotPrime) should be std::vector or std::array
+// use method reserve and shrink_to_fit
+// I don't use this function because isNotPrime2PrimeList_vec_array1() and isNotPrime2PrimeList_vec_array2()
+// is faster.
 template <typename T>
-auto isNotPrime2PrimeList_vec_array2(const T &isNotPrime){
+auto isNotPrime2PrimeList_vec2(const T &isNotPrime){
     int max_size = isNotPrime.size();
     T PrimeList;
-    PrimeList.reserve(max_size);
+    // siz is upper limit of prime-counting function
+    // https://en.wikipedia.org/wiki/Prime-counting_function
+    auto siz = int(max_size/std::log(max_size) * 1.04);
+    PrimeList.reserve(siz);
     int j = 0;
     for(int i = 2; i < max_size; ++i){
         if(!isNotPrime[i]){
-            PrimeList[j++] = i;
+            PrimeList.push_back(i);
         }
     }
     PrimeList.shrink_to_fit();
+    return PrimeList;
+}
+
+// This function is modified from isNotPrime2PrimeList_vec_array1()
+// for loop is replaced by while loop because while loop is faster.
+// Please see development note - 9 in README.md
+// include some lines about exception processing.
+template <typename T>
+auto isNotPrime2PrimeList_vec_array3(const T &isNotPrime){
+    if(isNotPrime.size() == 0){
+        T PrimeList(0);
+        std::cout << "Not Good Input" << std::endl;
+        return PrimeList;
+    }
+    int max_size = isNotPrime.size();
+    int length = isNotPrime.size() - sum_vec_array(isNotPrime);
+    T PrimeList(length);
+    int j = 0;
+    int i = 2;
+    while(i < max_size){
+        if(!isNotPrime[i]){
+            PrimeList[j++] = i;
+        }
+        ++i;
+    }
     return PrimeList;
 }
