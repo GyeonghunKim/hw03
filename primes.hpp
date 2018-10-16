@@ -392,11 +392,18 @@ auto get_prime_under_v12(const int max_val){
 // Little bit faster than before.
 auto get_prime_under_v13(const int max_val){
     auto max_val_plus_one = max_val+1;
-    std::vector<int> isNotPrime1(int((max_val + 1)/6));
-    std::vector<int> isNotPrime2(int((max_val - 1)/6));
+    auto length1 = int((max_val + 1)/6);
+    auto length2 = int((max_val - 1)/6);
+    std::vector<int> isNotPrime1(length1);
+    std::vector<int> isNotPrime2(length2);
+    int j;
     int k;
-    for(int i = 1; i < (max_val/6); ++i){
-
+    for(int i = 0; i < length1; ++i){
+        if(!isNotPrime1[i]){
+            j = 6*i + 5;
+            k = j;
+            while()
+        }
     }
 
 
