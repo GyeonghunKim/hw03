@@ -340,6 +340,7 @@ auto get_prime_under_v11(const int max_val){
 // Last version of get_prime_under() with CORRECT "sieve of Eratosthenes"
 // I include some lines about exception processing.
 // Display "Not Good Input" when input max_val is smaller than 2
+// This is NOT last version.....TT
 auto get_prime_under_last_version(const int max_val){
     if (max_val < 2) {
         std::vector<int> isNotPrime;
@@ -421,10 +422,9 @@ auto get_prime_under_v12(const int max_val){
 }
 
 
-// In "sieve of Eratosthenes", except for 2 and 3, we only have to check 6 * N +_ 1
-// Let's call this method as Modified "sieve of Eratosthenes"
-// First version of get_prime_under() with Modified "sieve of Eratosthenes"
-// Little bit faster than before.
+// This code is almost same with get_prime_under_v12()
+// This function uses isNotPrime2PrimeList_vec_array3_6n() instead of isNotPrime2PrimeList_vec_array3()
+// These two functions are in utils.hpp
 auto get_prime_under_v13(const int max_val){
     auto max_val_plus_one = max_val+1;
     std::vector<int> isNotPrime(max_val_plus_one);
@@ -453,7 +453,6 @@ auto get_prime_under_v13(const int max_val){
 
     return PrimeList;
 }
-
 
 
 

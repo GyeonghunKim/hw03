@@ -7,8 +7,8 @@
 //
 // In this homework, I create many version of functions which check prime
 // number under some large number N
-// It is sooo complicate to write all informations about my code in header, I create
-// README.md file. Please read README.md
+// It is sooo complicate to write all informations about my code in header, I create README.md file. Please read README.md
+// I
 
 #include <iostream>
 #include <cmath>
@@ -17,16 +17,10 @@
 #include "test_getPrimeUnder.hpp"
 #include "testing_experiments.hpp"
 int main() {
-    // This implement takes 19s in my computer.
+
     auto N = std::pow(2,30) - 1;
-    std::cout << estimate_time(get_prime_under_v12, N) << std::endl;
+    // get_prime_under_v13() takes 17s in my laptop to get prime number under 2^30 - 1
     std::cout << estimate_time(get_prime_under_v13, N) << std::endl;
-    // auto v = get_prime_under_v13(N);
-    // print_vec_array(v);
-    test_isCorrect_vec_arr(get_prime_under_v13, "get_prime_under_v13");
-    // std::array<int, 100> arr;
-    // while_vs_for();
-    // int_bool_vector_access_time_test();
 
     return 0;
 }

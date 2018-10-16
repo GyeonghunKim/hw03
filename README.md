@@ -18,18 +18,34 @@ In testing_experiments.cpp, it includes some testing about speed and etc........
     4. sum_list()
     5. isNotPrime2PrimeList_vec_array()
     6. isNotPrime2PrimeList_list()
+    7. isNotPrime2PrimeList_vec_array2()
+    8. isNotPrime2PrimeList_vec_array3()
+    9. isNotPrime2PrimeList_vec_array3_6n()
+
 * **primes.hpp**
     1. get_prime_under_v1()
     2. get_prime_under_v2()
     3. get_prime_under_v3()
     4. get_prime_under_v4()
+    5. get_prime_under_v5()
+    6. get_prime_under_v6()
+    7. get_prime_under_v7()
+    8. get_prime_under_v8()
+    9. get_prime_under_v9()
+    10. get_prime_under_v10()
+    11. get_prime_under_v11()
+    12. get_prime_under_v12()
+    13. get_prime_under_v13()
+    
 * **test_getPrimeUnder.hpp**
-    1. 
-    2. 
-    3. 
-    4. 
+    1. test_isCorrect_vec_arr()
+    2. estimate_time()
+
 * **testing_experiments.hpp**
-    1. test_getPrimeUnder()
+    1. compare_sqrt_and_pow()
+    2. container_access_time_test()
+    3. int_bool_vector_access_time_test()
+    4. while_vs_for()
 
 ## 3.Development Notes
 * I wrote Development Notes in order of "question -> test -> new_code -> feed back -> question -> ...  "
@@ -86,14 +102,15 @@ while(some conditions){
 ```
 So I create get_prime_under_v10() which look like Code 2.  
 It makes my code 2 times faster!  
-
 10.  I use some compiler flags and I found that -O3 -Ofast flag make my code quiet faster. 
 => Now I can get prime under (2^30 -1) in 18s!!!!
 But My I can increase input size because of memory error... (my computer is 8GB memeory)
-
 11. I pre_calculate auto max_val_plus_one = max_val + 1 because In loop, It calculate so many times.  
 => little bit faster
-
 12. I found that accessing speed for array is so much faster than accessing speed for vector with compiler flag -O3 -Ofast
-
-
+13. In "sieve of Eratosthenes", except for 2 and 3, we only have to check 6 * N +_ 1.  
+Let's call this method as Modified "sieve of Eratosthenes"  
+With this algorithm, I create get_prime_under_v11() and get_prime_under_v12() in primes.hpp and isNotPrime2PrimeList_vec_array3_6n() in utils.hpp
+=> It makes code little faster but, not change order.
+14. I found that with compiler flag -O3 -Ofast, accessing to array is soooooo much faster than accessing to vector....
+=> But I can't find smart methods to declare array with size which is variable...

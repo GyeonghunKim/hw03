@@ -94,7 +94,6 @@ auto isNotPrime2PrimeList_vec_array(const T &isNotPrime){
 // input data(isNotPrime) should be std::list
 template <typename T>
 auto isNotPrime2PrimeList_list(const T &isNotPrime){
-    int max_size = isNotPrime.size();
     int length = isNotPrime.size() - sum_list(isNotPrime);
     std::vector<int> PrimeList(length);
     int j = 0;
@@ -119,9 +118,8 @@ auto isNotPrime2PrimeList_vec2(const T &isNotPrime){
     T PrimeList;
     // siz is upper limit of prime-counting function
     // https://en.wikipedia.org/wiki/Prime-counting_function
-    auto siz = int(max_size/std::log(max_size) * 1.04);
+    auto siz = int(max_size/std::log(max_size) * 1.3);
     PrimeList.reserve(siz);
-    int j = 0;
     for(int i = 2; i < max_size; ++i){
         if(!isNotPrime[i]){
             PrimeList.push_back(i);
@@ -138,13 +136,13 @@ auto isNotPrime2PrimeList_vec2(const T &isNotPrime){
 template <typename T>
 auto isNotPrime2PrimeList_vec_array3(const T &isNotPrime){
     if(isNotPrime.size() == 0){
-        T PrimeList(0);
+        std::vector<int> PrimeList(0);
         std::cout << "Not Good Input" << std::endl;
         return PrimeList;
     }
     int max_size = isNotPrime.size();
     int length = isNotPrime.size() - sum_vec_array(isNotPrime);
-    T PrimeList(length);
+    std::vector<int> PrimeList(length);
     int j = 0;
     int i = 2;
     while(i < max_size){
@@ -157,16 +155,16 @@ auto isNotPrime2PrimeList_vec_array3(const T &isNotPrime){
 }
 
 
-
+// This function is modified from isNotPrime2PrimeList_vec_array2()
+// only pushback a number to PrimeList 6n plus minus 1
 template <typename T>
 auto isNotPrime2PrimeList_vec_array3_6n(const T &isNotPrime){
     int max_size = isNotPrime.size();
     T PrimeList;
     // siz is upper limit of prime-counting function
     // https://en.wikipedia.org/wiki/Prime-counting_function
-    auto siz = int(max_size/std::log(max_size) * 1.04);
+    auto siz = int(max_size/std::log(max_size) * 1.3);
     PrimeList.reserve(siz);
-    int j = 0;
     PrimeList.push_back(2);
     PrimeList.push_back(3);
     auto k = 0;
