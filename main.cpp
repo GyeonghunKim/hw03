@@ -18,12 +18,12 @@
 #include "testing_experiments.hpp"
 int main() {
     // This implement takes 19s in my computer.
-    // auto N = std::pow(2,29) - 1;
-    // std::cout << estimate_time(get_prime_under_v11, N) << std::endl;
-    // std::cout << estimate_time(get_prime_under_v12, N) << std::endl;
-    // auto v = get_prime_under_v13(100);
+    auto N = std::pow(2,30) - 1;
+    std::cout << estimate_time(get_prime_under_v12, N) << std::endl;
+    std::cout << estimate_time(get_prime_under_v13, N) << std::endl;
+    // auto v = get_prime_under_v13(N);
     // print_vec_array(v);
-    // test_isCorrect_vec_arr(get_prime_under_v12, "get_prime_under_v12");
+    test_isCorrect_vec_arr(get_prime_under_v13, "get_prime_under_v13");
     // std::array<int, 100> arr;
     // while_vs_for();
     // int_bool_vector_access_time_test();

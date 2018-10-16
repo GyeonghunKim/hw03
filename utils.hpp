@@ -155,3 +155,32 @@ auto isNotPrime2PrimeList_vec_array3(const T &isNotPrime){
     }
     return PrimeList;
 }
+
+
+
+template <typename T>
+auto isNotPrime2PrimeList_vec_array3_6n(const T &isNotPrime){
+    int max_size = isNotPrime.size();
+    T PrimeList;
+    // siz is upper limit of prime-counting function
+    // https://en.wikipedia.org/wiki/Prime-counting_function
+    auto siz = int(max_size/std::log(max_size) * 1.04);
+    PrimeList.reserve(siz);
+    int j = 0;
+    PrimeList.push_back(2);
+    PrimeList.push_back(3);
+    auto k = 0;
+    for(int i = 0; i < (max_size+1)/6; ++i){
+        k = 6*i+5;
+        if(!isNotPrime[k]){
+            PrimeList.push_back(k);
+        }
+        k += 2;
+        if(k > max_size) break;
+        if(!isNotPrime[k]){
+            PrimeList.push_back(k);
+        }
+    }
+    PrimeList.shrink_to_fit();
+    return PrimeList;
+}

@@ -337,6 +337,40 @@ auto get_prime_under_v11(const int max_val){
     return PrimeList;
 }
 
+// Last version of get_prime_under() with CORRECT "sieve of Eratosthenes"
+// I include some lines about exception processing.
+// Display "Not Good Input" when input max_val is smaller than 2
+auto get_prime_under_last_version(const int max_val){
+    if (max_val < 2) {
+        std::vector<int> isNotPrime;
+        return isNotPrime2PrimeList_vec_array3(isNotPrime);
+    }
+    auto max_val_plus_one = max_val+1;
+    std::vector<int> isNotPrime(max_val+1);
+    int k;
+    isNotPrime[0] = 1;
+    isNotPrime[1] = 1;
+    int i = 2;
+
+    while(i*i < max_val_plus_one){
+        if(isNotPrime[i]){++i; continue;}
+        k = i;
+        while (k * i < max_val_plus_one) {
+            isNotPrime[k * i] = 1;
+            ++k;
+        }
+        ++i;
+    }
+
+    auto PrimeList = isNotPrime2PrimeList_vec_array3(isNotPrime);
+
+    return PrimeList;
+}
+
+
+
+
+
 // In "sieve of Eratosthenes", except for 2 and 3, we only have to check 6 * N +_ 1
 // Let's call this method as Modified "sieve of Eratosthenes"
 // First version of get_prime_under() with Modified "sieve of Eratosthenes"
@@ -386,63 +420,40 @@ auto get_prime_under_v12(const int max_val){
     return PrimeList;
 }
 
+
 // In "sieve of Eratosthenes", except for 2 and 3, we only have to check 6 * N +_ 1
 // Let's call this method as Modified "sieve of Eratosthenes"
 // First version of get_prime_under() with Modified "sieve of Eratosthenes"
 // Little bit faster than before.
 auto get_prime_under_v13(const int max_val){
     auto max_val_plus_one = max_val+1;
-    auto length1 = int((max_val + 1)/6);
-    auto length2 = int((max_val - 1)/6);
-    std::vector<int> isNotPrime1(length1);
-    std::vector<int> isNotPrime2(length2);
-    int j;
-    int k;
-    for(int i = 0; i < length1; ++i){
-        if(!isNotPrime1[i]){
-            j = 6*i + 5;
-            k = j;
-            while()
-        }
-    }
-
-
-    return isNotPrime1;
-}
-
-
-
-
-
-
-
-// Last version of get_prime_under() with CORRECT "sieve of Eratosthenes"
-// I include some lines about exception processing.
-// Display "Not Good Input" when input max_val is smaller than 2
-auto get_prime_under_last_version(const int max_val){
-    if (max_val < 2) {
-        std::vector<int> isNotPrime;
-        return isNotPrime2PrimeList_vec_array3(isNotPrime);
-    }
-    auto max_val_plus_one = max_val+1;
-    std::vector<int> isNotPrime(max_val+1);
-    int k;
-    isNotPrime[0] = 1;
-    isNotPrime[1] = 1;
-    int i = 2;
-
+    std::vector<int> isNotPrime(max_val_plus_one);
+    int k = 0;
+    int i = 6;
     while(i*i < max_val_plus_one){
-        if(isNotPrime[i]){++i; continue;}
-        k = i;
-        while (k * i < max_val_plus_one) {
-            isNotPrime[k * i] = 1;
-            ++k;
+        auto i1 = i-1;
+        if(!isNotPrime[i1]){
+            k = i1;
+            while (k * i1 < max_val_plus_one) {
+                isNotPrime[k * i1] = 1;
+                ++k;
+            }
         }
-        ++i;
+        i1 = i+1;
+        if(!isNotPrime[i1]){
+            k = i1;
+            while (k * i1 < max_val_plus_one) {
+                isNotPrime[k * i1] = 1;
+                ++k;
+            }
+        }
+        i+=6;
     }
-
-    auto PrimeList = isNotPrime2PrimeList_vec_array3(isNotPrime);
+    auto PrimeList = isNotPrime2PrimeList_vec_array3_6n(isNotPrime);
 
     return PrimeList;
 }
+
+
+
 
